@@ -33,7 +33,7 @@ router.delete("/:id",verifyTokenAndAuthorization,async (req,res)=>{
 });
 
 
-//get
+//get user
 router.get("/find/:id",verifyTokenAndAdmin, async (req,res)=>{
     try{
         const user = await User.findById(req.params.id);
@@ -44,16 +44,45 @@ router.get("/find/:id",verifyTokenAndAdmin, async (req,res)=>{
     }
 }); 
 
+//get all user
+router.get("/", verifyTokenAndAdmin, async(req,res)=>{
+    const query = req.query.new
+    try {
+        const users = query 
+        ? await User.find().sort({_id:-1}).limit(5) 
+        : await User.find();
+        res.status(200).json(users);
+} catch (err) {
+    res.status(500).json(err);
+}
+});
+
+// get user stats
+router.get("/stats",verifyTokenAndAdmin,async(req,res)=>{
+    const date = new Date();
+    const lastYear = new Date(date.setFullYear(date.getFullYear()-1)); //returns last year today
+    try {
+        const data = await User.aggregate([
+            {$match: {createdAt: {$gte:lastYear}}},
+            {
+                $project: {
+                    month: {$month: "$createdAt"},
+                },
+            },
+            {
+                $group:{
+                    _id: "$month",
+                    total:{$sum:1},
+                }
+            }
+        ]);
+        res.status(200).json(data);
+        
+    } catch (err) {
+        res.status(500).json(err);
+        
+    }
+
+});
+
 module.exports = router;
-
-/* they was just test
-router.get("/usertest",(req,res)=>{
-    res.send("user test is successful");
-});
-
-router.post("/userposttest",(req,res)=>{
-    const username = req.body.username;
-    console.log(username);
-    res.send("hi "+username+" welcome to my website");
-});
-*/
