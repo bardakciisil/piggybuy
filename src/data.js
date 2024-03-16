@@ -9,7 +9,7 @@ export const sliderItems = [
     {
       id: 2,
       img: "https://i.ibb.co/2Nd92jP/photo-1516331138075-f3adc1e149cd-ixlib-rb-4-0.jpg",
-      title: "Now you see purple starish things",
+      title: "Now you will see purple starish photos",
       desc: "Nowadays I interested in galaxies, stars, neurons and cloud. And now i show some purpled images I liked to you in this slide",
       bg: "#EDE7F6",
     },
